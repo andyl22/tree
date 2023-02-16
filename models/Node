@@ -1,0 +1,19 @@
+import mongoose, { Schema } from "mongoose";
+
+const Node = new mongoose.Schema({
+  value: {
+    type: String,
+    required: true,
+  },
+  next: { type: Schema.Types.ObjectId, ref: "Node" },
+  createDttm: {
+    type: Date,
+    default: Date.now(),
+  },
+  updateDttm: {
+    type: Date,
+    default: Date.now(),
+  },
+});
+
+export default mongoose.models.Node || mongoose.model("Node", Node);
