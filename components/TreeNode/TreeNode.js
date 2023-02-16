@@ -11,7 +11,9 @@ export default function TreeNode(props) {
   const nodeChildRef = useRef();
   const nodeBranchRef = useRef();
   const canvasRef = useRef();
+  const [canvasWidth, setCanvasWidth] = useState();
 
+  // draw lines
   useEffect(() => {
     const currentCoordinates = currentNodeRef?.current?.getBoundingClientRect();
     if (!canvasRef?.current) return;
@@ -29,7 +31,6 @@ export default function TreeNode(props) {
     if (nodeBranchRef.current) {
       const nodeBranchCoordinates =
         nodeBranchRef.current.firstChild.firstChild.getBoundingClientRect();
-      console.log(nodeBranchCoordinates);
       const canvas = canvasRef.current;
       const ctx = canvas.getContext("2d");
       ctx.beginPath();
@@ -46,6 +47,15 @@ export default function TreeNode(props) {
       ctx.stroke();
     }
   });
+
+  // setWidth
+  useEffect(() => {
+    if (!canvasRef?.current) return;
+    const currentCoordinates =
+      currentNodeRef?.current?.parentNode?.parentNode?.getBoundingClientRect();
+    console.log(currentCoordinates);
+    setCanvasWidth(currentCoordinates.width);
+  }, [currentNode]);
 
   if (!currentNode) return;
 
@@ -87,6 +97,9 @@ export default function TreeNode(props) {
     top: 50%;
     left: 50%;
     pointer-events: none;
+    object-fit: cover;
+    width: ${canvasWidth};
+    height: 100%;
   `;
 
   const nextNode = currentNode?.next ? (
@@ -119,12 +132,14 @@ export default function TreeNode(props) {
               <AddIcon fontSize="small" />
             </button>
           )}
-          <canvas
-            className={canvasStyle}
-            ref={canvasRef}
-            width="30000"
-            height="100"
-          />
+          {nextNode || branchNode ? (
+            <canvas
+              className={canvasStyle}
+              ref={canvasRef}
+              width={canvasWidth - 180}
+              height="100"
+            />
+          ) : null}
         </div>
         <div className={treeLevel}>
           {nextNode}
