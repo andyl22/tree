@@ -1,7 +1,7 @@
 import { css } from "@emotion/css";
 import { useEffect, useState } from "react";
 import AddIcon from "@mui/icons-material/Add";
-import TreeNodeAddForm from "./TreeNodeAddForm";
+import TreeNodeAddChild from "./TreeNodeAddChild";
 
 export default function TreeNode(props) {
   const { nodeData, curNode } = props;
@@ -12,17 +12,21 @@ export default function TreeNode(props) {
   const treeNode = css`
     display: flex;
     flex-direction: column;
-    align-items: center;
     padding: 1rem;
     position: relative;
   `;
 
   const nodeContent = css`
-    padding: 1rem 3rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem;
     border: 1px solid #c2c2c2;
     border-radius: 0.1rem;
     width: 180px;
     text-align: center;
+    min-height: 100px;
   `;
 
   const treeLevel = css`
@@ -32,9 +36,7 @@ export default function TreeNode(props) {
   `;
 
   const treeBranch = css`
-    position: absolute;
-    left: 100%;
-    top: 0;
+    top: 100px;
   `;
 
   const nextNode = currentNode?.next ? (
@@ -52,9 +54,7 @@ export default function TreeNode(props) {
   };
 
   const closeAddChildForm = () => {
-    console.log("Close");
     setShowAddChildForm(false);
-    console.log("Closed");
   };
 
   return (
@@ -62,9 +62,11 @@ export default function TreeNode(props) {
       <div className={treeNode}>
         <div className={nodeContent}>
           <p>{currentNode?.value}</p>
-          <button onClick={openAddChildForm}>
-            <AddIcon fontSize="small" />
-          </button>
+          {treeNode && branchNode ? null : (
+            <button onClick={openAddChildForm}>
+              <AddIcon fontSize="small" />
+            </button>
+          )}
         </div>
         <div className={treeLevel}>
           {nextNode}
@@ -72,9 +74,11 @@ export default function TreeNode(props) {
         </div>
       </div>
       {showAddChildForm ? (
-        <TreeNodeAddForm
+        <TreeNodeAddChild
           closeAction={closeAddChildForm}
           nodeParent={currentNode}
+          enableBranch={branchNode ? true : false}
+          enableChild={nextNode ? true : false}
         />
       ) : null}
     </>

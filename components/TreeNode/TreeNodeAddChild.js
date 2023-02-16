@@ -3,8 +3,8 @@ import { css } from "@emotion/css";
 import FormModal from "../FormModal/FormModal";
 import { useState } from "react";
 
-export default function TreeNodeAddForm(props) {
-  const { nodeParent, closeAction } = props;
+export default function TreeNodeAddChild(props) {
+  const { nodeParent, closeAction, enableBranch, enableChild } = props;
   const [formState, setFormState] = useState({});
 
   const inputContainer = css`
@@ -17,13 +17,20 @@ export default function TreeNodeAddForm(props) {
     }
   `;
 
-  const submitAction = async () => {
+  const submitAction = async (action) => {
+    const updateType =
+      action === "add-child"
+        ? "next"
+        : action === "add-branch"
+        ? "branch"
+        : null;
+
     const newNode = await postHTTP("/createNode", { value: formState.value });
-    const updatedNode = await postHTTP("/updateNode", {
+    await postHTTP("/updateNodeReference", {
       nodeParent,
       newNode,
+      updateType,
     });
-    console.log(newNode, updatedNode);
   };
 
   const handleChange = (e) => {
@@ -46,6 +53,20 @@ export default function TreeNodeAddForm(props) {
         <label htmlFor="value">Value</label>
         <input type="text" id="value" onChange={handleChange} />
       </div>
+      <input
+        type="submit"
+        id="add-branch"
+        value="Add Branch"
+        style={{ width: "fit-content", padding: ".1rem .5rem" }}
+        disabled={enableBranch}
+      />
+      <input
+        type="submit"
+        id="add-child"
+        value="Add Child"
+        style={{ width: "fit-content", padding: ".1rem .5rem" }}
+        disabled={enableChild}
+      />
     </FormModal>
   );
 }

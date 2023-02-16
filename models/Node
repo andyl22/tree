@@ -6,6 +6,7 @@ const Node = new mongoose.Schema({
     required: true,
   },
   next: { type: Schema.Types.ObjectId, ref: "Node" },
+  branch: { type: Schema.Types.ObjectId, ref: "Node" },
   createDttm: {
     type: Date,
     default: Date.now(),

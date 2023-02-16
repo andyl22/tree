@@ -36,7 +36,10 @@ export default function FormModal(props) {
 
   const submitHandler = (e) => {
     e.preventDefault();
-    submitAction();
+
+    const action = e.nativeEvent.submitter.id;
+    submitAction(action);
+
     closeAction();
   };
 
@@ -55,10 +58,6 @@ export default function FormModal(props) {
         {modalTitle ? modalHeader : null}
         <form className={formContent} onSubmit={submitHandler}>
           {children}
-          <input
-            type="submit"
-            style={{ width: "fit-content", padding: ".1rem .5rem" }}
-          />
         </form>
       </div>
     </Modal>
