@@ -86,6 +86,7 @@ export default function TreeNode(props) {
     position: absolute;
     top: 50%;
     left: 50%;
+    pointer-events: none;
   `;
 
   const nextNode = currentNode?.next ? (
@@ -121,7 +122,7 @@ export default function TreeNode(props) {
           <canvas
             className={canvasStyle}
             ref={canvasRef}
-            width="1000"
+            width="30000"
             height="100"
           />
         </div>
