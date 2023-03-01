@@ -1,6 +1,6 @@
 import { css } from "@emotion/css";
 import TreeNode from "../TreeNode/TreeNode";
-import { NodeContext } from "@/testdata";
+import { NodeContext } from "@/context/nodeContext";
 import { useContext, useEffect } from "react";
 import { postHTTP } from "@/utilities/apiHelpers";
 
@@ -23,6 +23,7 @@ export default function Tree() {
     align-items: flex-start;
     justify-content: flex-start;
     gap: 2rem;
+    padding: 2rem;
     max-width: 100%;
     height: 100%;
     overflow: auto;

@@ -2,9 +2,7 @@ import Head from "next/head";
 import { Inter } from "@next/font/google";
 import styles from "@/styles/Home.module.css";
 import Tree from "@/components/Tree/Tree";
-import { NodeProvider } from "@/testdata";
-import { useEffect } from "react";
-import { css } from "@emotion/css";
+import { NodeProvider } from "@/context/nodeContext";
 
 const inter = Inter({ subsets: ["latin"] });
 
