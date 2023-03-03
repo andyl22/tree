@@ -4,10 +4,12 @@ import AddIcon from "@mui/icons-material/Add";
 import MoreHorizIcon from "@mui/icons-material/MoreHoriz";
 import ExpandLessIcon from "@mui/icons-material/ExpandLess";
 import TreeNodeAddChild from "./TreeNodeAddChild";
+import Dropdown from "../Dropdown/Dropdown";
 
 export default function TreeNode(props) {
   const { nodeData, curNode } = props;
   const [showAddChildForm, setShowAddChildForm] = useState(false);
+  const [showDropdown, setShowDropdown] = useState(false);
   const [renderBranches, setRenderBranches] = useState(true);
   const [canvasWidth, setCanvasWidth] = useState();
   const currentNode = nodeData.find((node) => node._id === curNode);
@@ -18,7 +20,7 @@ export default function TreeNode(props) {
   const canvasRef = useRef();
 
   const drawCanvas = () => {
-    console.log("Test");
+    console.log("Test", currentNode);
     const currentCoordinates = currentNodeRef?.current?.getBoundingClientRect();
     if (nodeChildRef.current) {
       const childCoordinates =
@@ -146,18 +148,6 @@ export default function TreeNode(props) {
     padding: 0 0.1rem 0.1rem 0.1rem;
   `;
 
-  const nextNode = currentNode?.next ? (
-    <div className={nodeChild} ref={nodeChildRef}>
-      <TreeNode nodeData={nodeData} curNode={currentNode.next} />
-    </div>
-  ) : null;
-
-  const branchNode = currentNode?.branch ? (
-    <div className={nodeBranch} ref={nodeBranchRef}>
-      <TreeNode nodeData={nodeData} curNode={currentNode.branch} />
-    </div>
-  ) : null;
-
   const openAddChildForm = () => {
     setShowAddChildForm(true);
   };
@@ -170,41 +160,67 @@ export default function TreeNode(props) {
     setRenderBranches(!renderBranches);
   };
 
+  const toggleDropdown = () => {
+    setShowDropdown(!showDropdown);
+  };
+
+  const nextNode = currentNode?.next ? (
+    <div className={nodeChild} ref={nodeChildRef}>
+      <TreeNode nodeData={nodeData} curNode={currentNode.next} />
+    </div>
+  ) : null;
+
+  const branchNode = currentNode?.branch ? (
+    <div className={nodeBranch} ref={nodeBranchRef}>
+      <TreeNode nodeData={nodeData} curNode={currentNode.branch} />
+    </div>
+  ) : null;
+
+  const buttonElements = (
+    <>
+      {showDropdown ? (
+        <Dropdown
+          dropdownActions={[{ label: "Add Node", event: openAddChildForm }]}
+          hideDropdown={toggleDropdown}
+        />
+      ) : (
+        <button className={`${buttons} ${menuButton}`} onClick={toggleDropdown}>
+          <MoreHorizIcon fontSize="small" />
+        </button>
+      )}
+      {treeNode && branchNode ? null : (
+        <button
+          className={`${buttons} ${addButton}`}
+          onClick={openAddChildForm}
+        >
+          <AddIcon fontSize="small" />
+        </button>
+      )}
+      {branchNode ? (
+        <button
+          className={`${buttons} ${collapseButton}`}
+          onClick={toggleBranchView}
+        >
+          <ExpandLessIcon />
+        </button>
+      ) : null}
+      {nextNode || branchNode ? (
+        <canvas
+          className={canvasStyle}
+          ref={canvasRef}
+          width={canvasWidth}
+          height="100"
+        />
+      ) : null}
+    </>
+  );
+
   return (
     <>
       <div className={treeNode}>
         <div className={nodeContent} ref={currentNodeRef}>
-          <button
-            className={`${buttons} ${menuButton}`}
-            onClick={openAddChildForm}
-          >
-            <MoreHorizIcon fontSize="small" />
-          </button>
           <p>{currentNode?.value}</p>
-          {treeNode && branchNode ? null : (
-            <button
-              className={`${buttons} ${addButton}`}
-              onClick={openAddChildForm}
-            >
-              <AddIcon fontSize="small" />
-            </button>
-          )}
-          {branchNode ? (
-            <button
-              className={`${buttons} ${collapseButton}`}
-              onClick={toggleBranchView}
-            >
-              <ExpandLessIcon />
-            </button>
-          ) : null}
-          {nextNode || branchNode ? (
-            <canvas
-              className={canvasStyle}
-              ref={canvasRef}
-              width={canvasWidth}
-              height="100"
-            />
-          ) : null}
+          {buttonElements}
         </div>
         <div className={treeLevel}>
           {nextNode}
